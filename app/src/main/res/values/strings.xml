@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RecyclerView With DiffUtils</string>
+    <string name="todo">TODO</string>
+</resources>
