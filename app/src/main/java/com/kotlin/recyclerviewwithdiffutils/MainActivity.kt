@@ -11,21 +11,17 @@ import com.kotlin.recyclerviewwithdiffutils.models.Employee
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
-    private lateinit var employeeList: ArrayList<Employee>
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var adapter: CustomAdapterEmployee
 
-    private fun initializations() {
-        employeeList = ArrayList()
-    }
+    private var employeeArrayList: ArrayList<Employee> = ArrayList()
+    private val employeeList: List<Employee> get() = employeeArrayList.toList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initializations()
         initRecyclerView()
         fillList()
 
@@ -33,14 +29,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        adapter = CustomAdapterEmployee()
-        binding.rvEmployeesMain.adapter = adapter
-
-        adapter.setOnItemClickListener(object : OnItemClickListener {
+        adapter = CustomAdapterEmployee(object : OnItemClickListener {
             override fun onItemClick(itemPosition: Int) {
                 Toast.makeText(this@MainActivity, employeeList[itemPosition].name, Toast.LENGTH_SHORT).show()
             }
         })
+        binding.rvEmployeesMain.adapter = adapter
     }
 
     private fun fillList() {
@@ -53,39 +47,24 @@ class MainActivity : AppCompatActivity() {
         val e7 = Employee(7, "Employee : 7")
         val e8 = Employee(8, "Employee : 8")
 
-        employeeList.add(e1)
-        employeeList.add(e2)
-        employeeList.add(e3)
-        employeeList.add(e4)
-        employeeList.add(e5)
-        employeeList.add(e6)
-        employeeList.add(e7)
-        employeeList.add(e8)
+        employeeArrayList.add(e1)
+        employeeArrayList.add(e2)
+        employeeArrayList.add(e3)
+        employeeArrayList.add(e4)
+        employeeArrayList.add(e5)
+        employeeArrayList.add(e6)
+        employeeArrayList.add(e7)
+        employeeArrayList.add(e8)
 
         adapter.submitList(employeeList)
-        Toast.makeText(this@MainActivity, this.employeeList.size.toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this@MainActivity, employeeList.size.toString(), Toast.LENGTH_SHORT).show()
     }
 
     private fun onAddButtonClick() {
-        // Creating new temporary List
-        val newList = ArrayList<Employee>()
-        newList.addAll(employeeList)
-
-        // Updating content & items
-        newList[5].name = "Sohaib Ahmed"
-        newList.add(Employee(9, "Employee : 9"))
-        newList.add(Employee(9, "Employee : 9"))
+        employeeArrayList.add(Employee(9, "Employee : 9"))
+        employeeArrayList.add(Employee(9, "Employee : 9"))
 
         // Resubmitting newList
-        adapter.submitList(newList)
-
-        // update oldList with newList
-        employeeList = newList.map { it.copy() } as ArrayList<Employee>
+        adapter.submitList(employeeList)
     }
-    /*
-    *   DiffUtils need two different lists
-    *   1) To Update data, always submit new list (for new reference). So, it can match with old list.
-    *   2) Update old list as well after each change.
-    * */
-
 }
